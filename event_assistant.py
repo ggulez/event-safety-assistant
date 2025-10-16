@@ -1,5 +1,6 @@
 import anthropic
 import os
+from datetime import datetime
 
 client = anthropic.Anthropic(
     api_key=os.environ.get("ANTHROPIC_API_KEY")
@@ -35,6 +36,30 @@ Be specific and practical."""}
     ]
 )
 
-# Print the analysis
-print(message.content[0].text)
+# Get the analysis
+analysis = message.content[0].text
+
+# Print it
+print(analysis)
 print("\n" + "=" * 60)
+
+# Ask if they want to save
+save = input("\nSave this analysis to file? (y/n): ")
+
+if save.lower() == 'y':
+    # Create filename with timestamp
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = f"analysis_{timestamp}.txt"
+    
+    # Write to file
+    with open(filename, 'w') as f:
+        f.write("EVENT SAFETY ANALYSIS\n")
+        f.write("=" * 60 + "\n")
+        f.write(f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"Event: {event_description}\n")
+        f.write("=" * 60 + "\n\n")
+        f.write(analysis)
+    
+    print(f"✅ Analysis saved to: {filename}")
+else:
+    print("Analysis not saved.")
